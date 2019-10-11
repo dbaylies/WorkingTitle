@@ -47,7 +47,9 @@ public class Oscillator : MonoBehaviour
         double delta_freq;
 
         delta_gain = (gain_a - gain) / num_samps;
+        gain_a = gain;
         delta_freq = (frequency_a - frequency) / num_samps;
+        frequency_a = frequency;
 
         for (int i = 0; i < data.Length; i += channels)
         {
