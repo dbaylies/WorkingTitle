@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 // Transcribed significantly from this Youtube tutorial: https://www.youtube.com/watch?v=GqHFGMy_51c
@@ -43,53 +42,23 @@ public class Oscillator : MonoBehaviour
 
         // Gain must change at "OnAudioFilterRead" rate to avoid clicks... except there are still clicks
         // Should be incrementing every SAMPLE, not each time OnAudioFilterRead is called! That's only every 20ms or so.
-        if (gain_a < gain)
-        {
-            gain_a += (float)0.01;
-            if (gain_a > gain)
-            {
-                gain_a = gain;
-            }
-        }
-        else if (gain_a > gain)
-        {
-            gain_a -= (float)0.01;
-            if (gain_a < gain)
-            {
-                gain_a = gain;
-            }
-        }
+        int num_samps = data.Length/channels;
+        float delta_gain;
+        double delta_freq;
 
-        // frequency too
-        if (frequency_a < frequency)
-        {
-            frequency_a += (float)0.1;
-            if (frequency_a > frequency)
-            {
-                frequency_a = frequency;
-            }
-        }
-        else if (frequency_a > frequency)
-        {
-            frequency_a -= (float)0.1;
-            if (frequency_a < frequency)
-            {
-                frequency_a = frequency;
-            }
-        }
-
-        increment = frequency * 2.0 * Mathf.PI / sampling_frequency; // Should be frequency_a
+        delta_gain = (gain_a - gain) / num_samps;
+        delta_freq = (frequency_a - frequency) / num_samps;
 
         for (int i = 0; i < data.Length; i += channels)
         {
-            phase += increment;
+            phase += frequency_a + (delta_freq * i/channels) * 2.0 * Mathf.PI / sampling_frequency;
 
             if (phase > Mathf.PI * 2)
             {
                 phase = phase - Mathf.PI * 2;
             }
 
-            data[i] = (float)(gain_a * Mathf.Sin((float)phase));
+            data[i] = (gain + (delta_gain * i/channels)) * Mathf.Sin((float)phase);
 
             if (channels == 2)
             {
