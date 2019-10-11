@@ -47,20 +47,24 @@ public class Oscillator : MonoBehaviour
         double delta_freq;
 
         delta_gain = (gain_a - gain) / num_samps;
+        if (delta_gain > 0.0001)
+        {
+            delta_gain = 0.0001f;
+        }
         gain_a = gain;
         delta_freq = (frequency_a - frequency) / num_samps;
         frequency_a = frequency;
 
         for (int i = 0; i < data.Length; i += channels)
         {
-            phase += frequency_a + (delta_freq * i/channels) * 2.0 * Mathf.PI / sampling_frequency;
+            phase += (frequency_a + (delta_freq * i/channels)) * 2.0 * Mathf.PI / sampling_frequency;
 
             if (phase > Mathf.PI * 2)
             {
                 phase = phase - Mathf.PI * 2;
             }
 
-            data[i] = (gain + (delta_gain * i/channels)) * Mathf.Sin((float)phase);
+            data[i] = (gain_a + (delta_gain * i/channels)) * Mathf.Sin((float)phase);
 
             if (channels == 2)
             {
