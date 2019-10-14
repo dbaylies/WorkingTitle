@@ -31,6 +31,7 @@ public class HandInstrumentLeft : MonoBehaviour
     {
         if (game_manager.play_mode == TriggerPlayMode.Continuous)
         {
+            // Would ideally update this every time OnAudioFilterRead is called, but doesn't seem to be callable in audio thread
             oscillator_script.SetGainFromSqueeze(m_SqueezeAction.GetAxis(m_Pose.inputSource));
         }
         else if (game_manager.play_mode == TriggerPlayMode.Pluck)
@@ -49,4 +50,10 @@ public class HandInstrumentLeft : MonoBehaviour
             }
         }
     }
+
+    public float GetSqueeze()
+    {
+        return m_SqueezeAction.GetAxis(m_Pose.inputSource);
+    }
+
 }

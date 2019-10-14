@@ -7,14 +7,13 @@ using UnityEngine;
 public class Oscillator : MonoBehaviour
 {
     public double frequency;
-    public double frequency_a;
-    private double increment;
-    private double phase;
-    private double sampling_frequency = 48000.0;
-    public float maxVolume = 0.2f; // What should there be? What is the expected normal gainstaging for a Vive user?
+    public double freq_old;
+    public float gain;
+    public float gain_old;
 
-    public float gain = 0;
-    public float gain_a = 0;
+    private double phase = 0;
+    private double sampling_frequency;
+    public float maxVolume = 0.2f; // What should there be? What is the expected normal gainstaging for a Vive user?
 
     public GameObject right_controller;
 
@@ -23,12 +22,20 @@ public class Oscillator : MonoBehaviour
 
     private void Start()
     {
-        
+        AudioConfiguration config = AudioSettings.GetConfiguration();
+        sampling_frequency = config.sampleRate;
+
+        frequency = GetFrequency();
+        freq_old = frequency;
+
+        gain = 0;
+        gain_old = 0;
+
     }
 
     private void Update()
     {
-        frequency = (right_controller.transform.position.y - 0.8) * 400 + 440; // To be rewritten...
+        frequency = GetFrequency();
     }
 
     public void SetGainFromSqueeze(float squeeze_single)
@@ -36,41 +43,44 @@ public class Oscillator : MonoBehaviour
         gain = Mathf.Pow(squeeze_single, 3) * maxVolume;
     }
 
+    private double GetFrequency()
+    {
+        return (right_controller.transform.position.y - 0.8) * 400 + 440; // To be rewritten...
+    }
+
+    // This function is called on the audio thread so we don't have access to many Unity functions unfortunately
     private void OnAudioFilterRead(float[] data, int channels)
     {
-        // Should only be doing these calculations when absolutely necessary
+        int num_frames = data.Length/channels;
 
-        // Gain must change at "OnAudioFilterRead" rate to avoid clicks... except there are still clicks
-        // Should be incrementing every SAMPLE, not each time OnAudioFilterRead is called! That's only every 20ms or so.
-        int num_samps = data.Length/channels;
         float delta_gain;
         double delta_freq;
 
-        delta_gain = (gain_a - gain) / num_samps;
-        if (delta_gain > 0.0001)
-        {
-            delta_gain = 0.0001f;
-        }
-        gain_a = gain;
-        delta_freq = (frequency_a - frequency) / num_samps;
-        frequency_a = frequency;
+        float gain_new = gain;
+        double freq_new = frequency;
+
+        delta_gain = (gain_new - gain_old) / num_frames;
+        delta_freq = (freq_new - freq_old) / num_frames;
 
         for (int i = 0; i < data.Length; i += channels)
         {
-            phase += (frequency_a + (delta_freq * i/channels)) * 2.0 * Mathf.PI / sampling_frequency;
+            phase += (freq_old + (delta_freq * i/channels)) * 2.0 * Mathf.PI / sampling_frequency;
 
             if (phase > Mathf.PI * 2)
             {
                 phase = phase - Mathf.PI * 2;
             }
 
-            data[i] = (gain_a + (delta_gain * i/channels)) * Mathf.Sin((float)phase);
+            data[i] = (gain_old + (delta_gain * i/channels)) * Mathf.Sin((float)phase);
 
             if (channels == 2)
             {
                 data[i + 1] = data[i];
             }
         }
+
+        gain_old = gain_new;
+        freq_old = freq_new;
     }
 
     IEnumerator NoteOn()
