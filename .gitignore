@@ -1,0 +1,12 @@
+*.json
+*.csproj
+*.sln
+*.htm
+*.vrmanifest
+.vs/
+Assets.zip
+Library/
+Logs/
+ProjectSettings/
+obj/
+Temp/

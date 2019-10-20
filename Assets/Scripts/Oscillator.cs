@@ -38,14 +38,14 @@ public class Oscillator : MonoBehaviour
         frequency = GetFrequency();
     }
 
-    public void SetGainFromSqueeze(float squeeze_single)
-    {
-        gain = Mathf.Pow(squeeze_single, 3) * maxVolume;
-    }
-
     private double GetFrequency()
     {
         return (right_controller.transform.position.y - 0.8) * 400 + 440; // To be rewritten...
+    }
+
+    public void SetGainFromSqueeze(float squeeze_single)
+    {
+        gain = Mathf.Pow(squeeze_single, 3) * maxVolume;
     }
 
     // This function is called on the audio thread so we don't have access to many Unity functions unfortunately
