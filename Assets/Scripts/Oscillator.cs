@@ -16,16 +16,30 @@ public class Oscillator : MonoBehaviour
     public float maxVolume = 0.2f; // What should there be? What is the expected normal gainstaging for a Vive user?
 
     public GameObject right_controller;
+    public GameObject left_controller;
+
+    private GameManager game_manager;
+
+    private HandInstrumentRight right_controller_script;
+    private HandInstrumentLeft left_controller_script;
 
     // public float[] frequencies;
     // public int thisfreq;
+
+    private void Awake()
+    {
+        game_manager = GameManager.Instance;
+
+        right_controller_script = right_controller.GetComponent<HandInstrumentRight>();
+        left_controller_script = left_controller.GetComponent<HandInstrumentLeft>();
+    }
 
     private void Start()
     {
         AudioConfiguration config = AudioSettings.GetConfiguration();
         sampling_frequency = config.sampleRate;
 
-        frequency = GetFrequency();
+        frequency = SetFrequencyFromRightPad();
         freq_old = frequency;
 
         gain = 0;
@@ -33,14 +47,58 @@ public class Oscillator : MonoBehaviour
 
     }
 
+    // TODO: Consider using InvokeRepeating here instead, you can poll the controller status faster than 
+    // with Update (I think!)
     private void Update()
     {
-        frequency = GetFrequency();
+        frequency = SetFrequencyFromRightPad();
+
+        if (game_manager.play_mode == TriggerPlayMode.Continuous)
+        {
+            // Would ideally update this every time OnAudioFilterRead is called, but doesn't seem to be callable in audio thread
+            SetGainFromSqueeze(left_controller_script.GetSqueeze());
+        }
+        else if (game_manager.play_mode == TriggerPlayMode.Pluck)
+        {
+            if (left_controller_script.GetTriggerStateDown())
+            {
+                StartCoroutine("NoteOn");
+            }
+            if (left_controller_script.GetTriggerStateUp())
+            {
+                StartCoroutine("NoteOff");
+            }
+        }
+
     }
 
-    private double GetFrequency()
+    private double SetFrequencyFromRightPad()
     {
-        return (right_controller.transform.position.y - 0.8) * 400 + 440; // To be rewritten...
+        HandInstrumentRight.PadDirection direction = right_controller_script.GetPadDirection();
+
+        // Default if no direction selected
+        float pad_freq;
+
+        switch (direction)
+        {
+            case HandInstrumentRight.PadDirection.PadDown:
+                pad_freq = 500;
+                break;
+            case HandInstrumentRight.PadDirection.PadLeft:
+                pad_freq = 600;
+                break;
+            case HandInstrumentRight.PadDirection.PadUp:
+                pad_freq = 700;
+                break;
+            case HandInstrumentRight.PadDirection.PadRight:
+                pad_freq = 800;
+                break;
+            default:
+                pad_freq = 70;
+                break;
+        }
+
+        return pad_freq;
     }
 
     public void SetGainFromSqueeze(float squeeze_single)
