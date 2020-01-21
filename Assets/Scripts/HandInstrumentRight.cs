@@ -64,4 +64,9 @@ public class HandInstrumentRight : MonoBehaviour
 
         return pad_dir;
     }
+
+    public float GetHeight()
+    {
+        return transform.position.y;
+    }
 }

@@ -23,8 +23,8 @@ public class Oscillator : MonoBehaviour
     private HandInstrumentRight right_controller_script;
     private HandInstrumentLeft left_controller_script;
 
-    // public float[] frequencies;
-    // public int thisfreq;
+    // Should these be doubles instead?
+    public float[] frequencies;
 
     private void Awake()
     {
@@ -39,19 +39,22 @@ public class Oscillator : MonoBehaviour
         AudioConfiguration config = AudioSettings.GetConfiguration();
         sampling_frequency = config.sampleRate;
 
-        frequency = SetFrequencyFromRightPad();
+        frequency = DetermineAndSetFrequency();
         freq_old = frequency;
 
         gain = 0;
         gain_old = 0;
 
+        frequencies = new float[] { 220.0f, 233.1f, 246.9f, 261.6f, 277.2f, 293.7f, 311.1f, 329.6f, 349.2f, 370.0f, 392.0f, 415.3f,
+        440.0f, 466.2f, 493.9f, 523.3f, 554.4f, 587.3f, 622.3f, 659.3f, 698.5f, 740.0f, 784.0f, 830.6f, 880.0f,
+        932.3f, 987.8f, 1047f, 1109f, 1175f, 1245f, 1319f, 1397f, 1480f, 1568f, 1661f, 1760f };
     }
 
     // TODO: Consider using InvokeRepeating here instead, you can poll the controller status faster than 
     // with Update (I think!)
     private void Update()
     {
-        frequency = SetFrequencyFromRightPad();
+        frequency = DetermineAndSetFrequency();
 
         if (game_manager.play_mode == TriggerPlayMode.Continuous)
         {
@@ -72,30 +75,186 @@ public class Oscillator : MonoBehaviour
 
     }
 
-    private double SetFrequencyFromRightPad()
+    private double DetermineAndSetFrequency()
     {
         HandInstrumentRight.PadDirection direction = right_controller_script.GetPadDirection();
 
-        // Default if no direction selected
-        float pad_freq;
+        float right_height = right_controller_script.GetHeight();
 
-        switch (direction)
+        float pad_freq = 70;
+
+        if (right_height <= 1.0)
+            switch (direction)
+            {
+                case HandInstrumentRight.PadDirection.PadDown:
+                    pad_freq = frequencies[0];
+                    break;
+                case HandInstrumentRight.PadDirection.PadLeft:
+                    pad_freq = frequencies[1];
+                    break;
+                case HandInstrumentRight.PadDirection.PadUp:
+                    pad_freq = frequencies[2];
+                    break;
+                case HandInstrumentRight.PadDirection.PadRight:
+                    pad_freq = frequencies[3];
+                    break;
+                default:
+                    pad_freq = 70;
+                    break;
+            }
+        else if (right_height <= 1.1)
+            switch (direction)
+            {
+                case HandInstrumentRight.PadDirection.PadDown:
+                    pad_freq = frequencies[4];
+                    break;
+                case HandInstrumentRight.PadDirection.PadLeft:
+                    pad_freq = frequencies[5];
+                    break;
+                case HandInstrumentRight.PadDirection.PadUp:
+                    pad_freq = frequencies[6];
+                    break;
+                case HandInstrumentRight.PadDirection.PadRight:
+                    pad_freq = frequencies[7];
+                    break;
+                default:
+                    pad_freq = 70;
+                    break;
+            }
+        else if (right_height <= 1.2)
+            switch (direction)
+            {
+                case HandInstrumentRight.PadDirection.PadDown:
+                    pad_freq = frequencies[8];
+                    break;
+                case HandInstrumentRight.PadDirection.PadLeft:
+                    pad_freq = frequencies[9];
+                    break;
+                case HandInstrumentRight.PadDirection.PadUp:
+                    pad_freq = frequencies[10];
+                    break;
+                case HandInstrumentRight.PadDirection.PadRight:
+                    pad_freq = frequencies[11];
+                    break;
+                default:
+                    pad_freq = 70;
+                    break;
+            }
+        else if (right_height <= 1.3)
+            switch (direction)
+            {
+                case HandInstrumentRight.PadDirection.PadDown:
+                    pad_freq = frequencies[12];
+                    break;
+                case HandInstrumentRight.PadDirection.PadLeft:
+                    pad_freq = frequencies[13];
+                    break;
+                case HandInstrumentRight.PadDirection.PadUp:
+                    pad_freq = frequencies[14];
+                    break;
+                case HandInstrumentRight.PadDirection.PadRight:
+                    pad_freq = frequencies[15];
+                    break;
+                default:
+                    pad_freq = 70;
+                    break;
+            }
+        else if (right_height <= 1.4)
+            switch (direction)
+            {
+                case HandInstrumentRight.PadDirection.PadDown:
+                    pad_freq = frequencies[16];
+                    break;
+                case HandInstrumentRight.PadDirection.PadLeft:
+                    pad_freq = frequencies[17];
+                    break;
+                case HandInstrumentRight.PadDirection.PadUp:
+                    pad_freq = frequencies[18];
+                    break;
+                case HandInstrumentRight.PadDirection.PadRight:
+                    pad_freq = frequencies[19];
+                    break;
+                default:
+                    pad_freq = 70;
+                    break;
+            }
+        else if (right_height <= 1.5)
+            switch (direction)
+            {
+                case HandInstrumentRight.PadDirection.PadDown:
+                    pad_freq = frequencies[20];
+                    break;
+                case HandInstrumentRight.PadDirection.PadLeft:
+                    pad_freq = frequencies[21];
+                    break;
+                case HandInstrumentRight.PadDirection.PadUp:
+                    pad_freq = frequencies[22];
+                    break;
+                case HandInstrumentRight.PadDirection.PadRight:
+                    pad_freq = frequencies[23];
+                    break;
+                default:
+                    pad_freq = 70;
+                    break;
+            }
+        else if (right_height <= 1.6)
+            switch (direction)
+            {
+                case HandInstrumentRight.PadDirection.PadDown:
+                    pad_freq = frequencies[24];
+                    break;
+                case HandInstrumentRight.PadDirection.PadLeft:
+                    pad_freq = frequencies[25];
+                    break;
+                case HandInstrumentRight.PadDirection.PadUp:
+                    pad_freq = frequencies[26];
+                    break;
+                case HandInstrumentRight.PadDirection.PadRight:
+                    pad_freq = frequencies[27];
+                    break;
+                default:
+                    pad_freq = 70;
+                    break;
+            }
+        else if (right_height <= 1.7)
+            switch (direction)
+            {
+                case HandInstrumentRight.PadDirection.PadDown:
+                    pad_freq = frequencies[28];
+                    break;
+                case HandInstrumentRight.PadDirection.PadLeft:
+                    pad_freq = frequencies[29];
+                    break;
+                case HandInstrumentRight.PadDirection.PadUp:
+                    pad_freq = frequencies[30];
+                    break;
+                case HandInstrumentRight.PadDirection.PadRight:
+                    pad_freq = frequencies[31];
+                    break;
+                default:
+                    pad_freq = 70;
+                    break;
+            }
+        else
         {
-            case HandInstrumentRight.PadDirection.PadDown:
-                pad_freq = 500;
-                break;
-            case HandInstrumentRight.PadDirection.PadLeft:
-                pad_freq = 600;
-                break;
-            case HandInstrumentRight.PadDirection.PadUp:
-                pad_freq = 700;
-                break;
-            case HandInstrumentRight.PadDirection.PadRight:
-                pad_freq = 800;
-                break;
-            default:
-                pad_freq = 70;
-                break;
+            switch (direction)
+            {
+                case HandInstrumentRight.PadDirection.PadDown:
+                    pad_freq = frequencies[32];
+                    break;
+                case HandInstrumentRight.PadDirection.PadLeft:
+                    pad_freq = frequencies[33];
+                    break;
+                case HandInstrumentRight.PadDirection.PadUp:
+                    pad_freq = frequencies[34];
+                    break;
+                case HandInstrumentRight.PadDirection.PadRight:
+                    pad_freq = frequencies[35];
+                    break;
+                default:
+                    pad_freq = 70;
+                    break;
+            }
         }
 
         return pad_freq;
