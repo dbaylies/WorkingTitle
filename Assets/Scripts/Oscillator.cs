@@ -59,7 +59,9 @@ public class Oscillator : MonoBehaviour
         if (game_manager.play_mode == TriggerPlayMode.Continuous)
         {
             // Would ideally update this every time OnAudioFilterRead is called, but doesn't seem to be callable in audio thread
-            SetGainFromSqueeze(left_controller_script.GetSqueeze());
+            // SetGainFromSqueeze(left_controller_script.GetSqueeze());
+            SetGainFromXPosition(left_controller_script.GetXPosition());
+
         }
         else if (game_manager.play_mode == TriggerPlayMode.Pluck)
         {
@@ -263,6 +265,14 @@ public class Oscillator : MonoBehaviour
     public void SetGainFromSqueeze(float squeeze_single)
     {
         gain = Mathf.Pow(squeeze_single, 3) * maxVolume;
+    }
+
+    public void SetGainFromXPosition(float XPosition)
+    {
+        if (XPosition < -0.44 || XPosition > -0.4)
+            gain = 0.2f;
+        else
+            gain = 0f;
     }
 
     // This function is called on the audio thread so we don't have access to many Unity functions unfortunately

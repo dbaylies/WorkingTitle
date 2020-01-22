@@ -37,4 +37,9 @@ public class HandInstrumentLeft : MonoBehaviour
         return m_GrabAction.GetStateUp(m_Pose.inputSource);
     }
 
+    public float GetXPosition()
+    {
+        return transform.position.x;
+    }
+
 }
