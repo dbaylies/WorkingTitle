@@ -23,6 +23,8 @@ public class Oscillator : MonoBehaviour
     private HandInstrumentRight right_controller_script;
     private HandInstrumentLeft left_controller_script;
 
+    private ADSR adsr_script;
+
     // Should these be doubles instead?
     public float[] frequencies;
 
@@ -32,6 +34,9 @@ public class Oscillator : MonoBehaviour
 
         right_controller_script = right_controller.GetComponent<HandInstrumentRight>();
         left_controller_script = left_controller.GetComponent<HandInstrumentLeft>();
+
+        // ADSR script must be on the same game object as this oscillator script
+        adsr_script = GetComponent<ADSR>();
     }
 
     private void Start()
@@ -56,25 +61,13 @@ public class Oscillator : MonoBehaviour
     {
         frequency = DetermineAndSetFrequency();
 
-        if (game_manager.play_mode == TriggerPlayMode.Continuous)
-        {
-            // Would ideally update this every time OnAudioFilterRead is called, but doesn't seem to be callable in audio thread
-            // SetGainFromSqueeze(left_controller_script.GetSqueeze());
-            SetGainFromXPosition(left_controller_script.GetXPosition());
+        gain = maxVolume * GetGainFromADSR();
 
-        }
-        else if (game_manager.play_mode == TriggerPlayMode.Pluck)
-        {
-            if (left_controller_script.GetTriggerStateDown())
-            {
-                StartCoroutine("NoteOn");
-            }
-            if (left_controller_script.GetTriggerStateUp())
-            {
-                StartCoroutine("NoteOff");
-            }
-        }
+    }
 
+    public float GetGainFromADSR()
+    {
+        return adsr_script.GetCurrentAmplitude();
     }
 
     private double DetermineAndSetFrequency()
@@ -262,18 +255,19 @@ public class Oscillator : MonoBehaviour
         return pad_freq;
     }
 
-    public void SetGainFromSqueeze(float squeeze_single)
-    {
-        gain = Mathf.Pow(squeeze_single, 3) * maxVolume;
-    }
+    //public void SetGainFromSqueeze(float squeeze_single)
+    //{
+    //    gain = Mathf.Pow(squeeze_single, 3) * maxVolume;
+    //}
 
-    public void SetGainFromXPosition(float XPosition)
-    {
-        if (XPosition < -0.44 || XPosition > -0.4)
-            gain = 0.2f;
-        else
-            gain = 0f;
-    }
+    //public void GetGainFromXPosition(float XPosition)
+    //{
+    //    if (XPosition < -0.44 || XPosition > -0.4)
+    //        gain = 0.2f;
+    //    else
+    //        gain = 0f;
+    //}
+
 
     // This function is called on the audio thread so we don't have access to many Unity functions unfortunately
     private void OnAudioFilterRead(float[] data, int channels)
@@ -308,37 +302,5 @@ public class Oscillator : MonoBehaviour
 
         gain_old = gain_new;
         freq_old = freq_new;
-    }
-
-    IEnumerator NoteOn()
-    {
-        float SecondsToFade = 0.2f;
-        float startVol = gain;
-        float targetVol = 0.1f;
-
-        for (float x = 0.0f; x <= 1.0f; x += Time.deltaTime / SecondsToFade)
-        {
-            print("hm");
-            gain = Mathf.Lerp(startVol, targetVol, x);
-            yield return null;// new WaitForEndOfFrame();
-        }
-
-        gain = targetVol;
-    }
-
-
-    IEnumerator NoteOff()
-    {
-        float SecondsToFade = 0.2f;
-        float startVol = gain;
-        float targetVol = 0.0f;
-
-        for (float x = 0.0f; x <= 1.0f; x += Time.deltaTime / SecondsToFade)
-        {
-            gain = Mathf.Lerp(startVol, targetVol, x);
-            yield return null;// new WaitForEndOfFrame();
-        }
-
-        gain = targetVol;
     }
 }
