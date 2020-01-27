@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class ADSR : MonoBehaviour
 {
-
     public float attack;
     public float decay;
     public float sustain;
@@ -33,6 +32,7 @@ public class ADSR : MonoBehaviour
 
     }
 
+    // Give parameters as arguments
     IEnumerator NoteOn()
     {
         Debug.Log("Test");
