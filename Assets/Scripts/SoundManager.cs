@@ -4,23 +4,31 @@ using UnityEngine;
 
 public class SoundManager : Singleton<SoundManager>
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-    }
 
     public void TriggerHit()
     {
-        NoteOn();
+        // TODO: Consider using InvokeRepeating here instead, you can poll the controller status faster than 
+        // with coroutines (I think!)
+        StopCoroutine("NoteOn");
+        StartCoroutine("NoteOn");
     }
 
-    private void NoteOn()
+    IEnumerator NoteOn()
     {
-        GameObject.Find("Sphere").GetComponent<ADSR>().TriggerHit();
+        ADSR adsr = GameObject.Find("Sphere").GetComponent<ADSR>();
+        Oscillator oscillator = GameObject.Find("Sphere").GetComponent<Oscillator>();
+
+        adsr.StartCoroutine("NoteOn");
+
+        oscillator.TurnOn();
+        do
+        {
+            oscillator.SetVolumeAndFrequency(adsr.GetCurrentAmplitude(), 440f);
+            yield return null;
+        }
+        while ( adsr.GetCurrentAmplitude() > 0 );
+        oscillator.TurnOff();
     }
+
+
 }

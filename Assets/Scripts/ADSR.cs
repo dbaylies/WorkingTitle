@@ -23,12 +23,6 @@ public class ADSR : MonoBehaviour
         release = 0.5f;  // Seconds
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public float GetCurrentAmplitude()
     {
         return currentAmplitude;
@@ -37,12 +31,6 @@ public class ADSR : MonoBehaviour
     void HoldAmplitude()
     {
 
-    }
-
-    public void TriggerHit()
-    {
-        StopCoroutine("NoteOn");
-        StartCoroutine("NoteOn");
     }
 
     IEnumerator NoteOn()
