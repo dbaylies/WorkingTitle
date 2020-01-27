@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TriggerCube : MonoBehaviour
+public class SoundManager : Singleton<SoundManager>
 {
     // Start is called before the first frame update
     void Start()
@@ -14,11 +14,13 @@ public class TriggerCube : MonoBehaviour
     {
     }
 
-    private void OnTriggerEnter(Collider other)
+    public void TriggerHit()
     {
-        if (other.gameObject.tag == "controller")
-        {
-            SoundManager.Instance.TriggerHit();
-        }
+        NoteOn();
+    }
+
+    private void NoteOn()
+    {
+        GameObject.Find("Sphere").GetComponent<ADSR>().TriggerHit();
     }
 }
