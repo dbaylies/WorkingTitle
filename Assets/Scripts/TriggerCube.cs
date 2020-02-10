@@ -9,6 +9,7 @@ public class TriggerCube : MonoBehaviour
         if (other.gameObject.tag == "controller")
         {
             SoundManager.Instance.TriggerHit();
+            GameManager.Instance.VibrateLeftController();
         }
     }
 }

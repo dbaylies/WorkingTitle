@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class GameManager : Singleton<GameManager>
 {
+
+
     // Define and deal with game-wide variables here, like settings
 
     // Start is called before the first frame update
@@ -14,5 +16,11 @@ public class GameManager : Singleton<GameManager>
     // Update is called once per frame
     void Update()
     {
+
+    }
+
+    public void VibrateLeftController()
+    {
+        GameObject.Find("Controller (left)").GetComponent<HandInstrumentLeft>().Vibrate();
     }
 }

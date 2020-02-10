@@ -16,8 +16,10 @@ public class HandInstrumentRight : MonoBehaviour
 
     public SteamVR_Action_Boolean m_GrabAction = null;
     public SteamVR_Action_Vector2 m_PadPosition = null;
+    public SteamVR_Action_Vibration m_Vibration = null;
 
     private SteamVR_Behaviour_Pose m_Pose = null;
+
 
 
     private void Awake()
@@ -28,7 +30,7 @@ public class HandInstrumentRight : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        // Determine note being played
+        
     }
 
     // Can probably optimize to only do the math if the direction has changed

@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using Valve.VR;
 
-// Communication scheme between scripts taken from here: https://www.youtube.com/watch?v=_4xNz23Wlfo
-
 public class HandInstrumentLeft : MonoBehaviour
 {
-
     public SteamVR_Action_Boolean m_GrabAction = null;
     public SteamVR_Action_Single m_SqueezeAction = null;
+    public SteamVR_Action_Vibration m_Vibration = null;
 
     private SteamVR_Behaviour_Pose m_Pose = null;
 
@@ -42,4 +40,8 @@ public class HandInstrumentLeft : MonoBehaviour
         return transform.position.x;
     }
 
+    public void Vibrate()
+    {
+        m_Vibration.Execute(0.0f, 1.0f, 50.0f, 0.5f, Valve.VR.SteamVR_Input_Sources.LeftHand);
+    }
 }
