@@ -6,10 +6,10 @@ public class TriggerCube : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "controller")
+        if (other.gameObject.name == "Controller (left)")
         {
             SoundManager.Instance.TriggerHit();
-            GameManager.Instance.VibrateLeftController();
+            // GameManager.Instance.VibrateLeftController();
         }
     }
 }

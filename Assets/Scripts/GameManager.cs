@@ -23,4 +23,9 @@ public class GameManager : Singleton<GameManager>
     {
         GameObject.Find("Controller (left)").GetComponent<HandInstrumentLeft>().Vibrate();
     }
+
+    public void VibrateRightController()
+    {
+        GameObject.Find("Controller (right)").GetComponent<HandInstrumentRight>().Vibrate();
+    }
 }

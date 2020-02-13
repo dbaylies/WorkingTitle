@@ -71,4 +71,9 @@ public class HandInstrumentRight : MonoBehaviour
     {
         return transform.position.y;
     }
+
+    public void Vibrate()
+    {
+        m_Vibration.Execute(0.0f, 0.1f, 80.0f, 0.15f, Valve.VR.SteamVR_Input_Sources.RightHand);
+    }
 }
