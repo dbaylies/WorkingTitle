@@ -37,7 +37,7 @@ public class ADSR : MonoBehaviour
     {
         // ATTACK
         // Peak amplitude should be determined by some kind of velocity parameter
-        for (float x = startAmplitude; x <= 1.0f; x += (Time.deltaTime / attack) * (1.0f - startAmplitude))
+        for (float x = startAmplitude; x < 1.0f; x += (Time.deltaTime / attack) * (1.0f - startAmplitude))
         {
             currentAmplitude = x;
             yield return null;
@@ -46,7 +46,7 @@ public class ADSR : MonoBehaviour
         currentAmplitude = 1.0f;
 
         // DECAY
-        for (float x = currentAmplitude; x >= sustain; x -= (Time.deltaTime / decay) * (1.0f - sustain))
+        for (float x = currentAmplitude; x > sustain; x -= (Time.deltaTime / decay) * (1.0f - sustain))
         {
             currentAmplitude = x;
             yield return null;
@@ -60,7 +60,7 @@ public class ADSR : MonoBehaviour
         // The following should end up in NoteOff()
 
         // RELEASE
-        for (float x = sustain; x >= 0; x -= (Time.deltaTime / release) * (sustain))
+        for (float x = sustain; x > 0; x -= (Time.deltaTime / release) * (sustain))
         {
             currentAmplitude = x;
             yield return null;

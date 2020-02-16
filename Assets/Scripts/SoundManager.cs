@@ -50,8 +50,8 @@ public class SoundManager : Singleton<SoundManager>
 
     private float DetermineFrequency()
     {
-        float base_height = 1.0f;
-        float height_increment = 0.1f;
+        float base_height = 1.2f;
+        float height_increment = 0.06f;
         int num_levels = 9;
         int pitches_per_level = 4;
 
