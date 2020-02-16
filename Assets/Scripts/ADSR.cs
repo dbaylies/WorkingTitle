@@ -33,11 +33,11 @@ public class ADSR : MonoBehaviour
     }
 
     // Give parameters as arguments
-    IEnumerator NoteOn()
+    IEnumerator NoteOn(float startAmplitude)
     {
-        Debug.Log("Test");
+        // ATTACK
         // Peak amplitude should be determined by some kind of velocity parameter
-        for (float x = 0.0f; x <= 1.0f; x += Time.deltaTime / attack)
+        for (float x = startAmplitude; x <= 1.0f; x += (Time.deltaTime / attack) * (1.0f - startAmplitude))
         {
             currentAmplitude = x;
             yield return null;
@@ -45,6 +45,7 @@ public class ADSR : MonoBehaviour
 
         currentAmplitude = 1.0f;
 
+        // DECAY
         for (float x = currentAmplitude; x >= sustain; x -= (Time.deltaTime / decay) * (1.0f - sustain))
         {
             currentAmplitude = x;
@@ -53,11 +54,12 @@ public class ADSR : MonoBehaviour
 
         currentAmplitude = sustain;
 
-        // Amt of time to sustain
+        // SUSTAIN
         // yield return new WaitForSeconds(2.0f);
 
         // The following should end up in NoteOff()
 
+        // RELEASE
         for (float x = sustain; x >= 0; x -= (Time.deltaTime / release) * (sustain))
         {
             currentAmplitude = x;
