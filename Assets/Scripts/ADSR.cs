@@ -10,16 +10,16 @@ public class ADSR : MonoBehaviour
     public float release;
 
     public float currentAmplitude;
+    public float maxAmplitude;
 
-    private bool triggerDown;
-
-    // Start is called before the first frame update
     void Start()
     {
         attack = 0.2f;  // Seconds
         decay = 0.3f;  // Seconds
         sustain = 0.6f;  // Amplitude
         release = 0.5f;  // Seconds
+
+        maxAmplitude = 1.0f;
     }
 
     public float GetCurrentAmplitude()
@@ -36,39 +36,31 @@ public class ADSR : MonoBehaviour
     IEnumerator NoteOn(float startAmplitude)
     {
         // ATTACK
+        // Attack faster if we aren't starting from 0
+        float attack_temp = attack * (1.0f - (startAmplitude / maxAmplitude));
         // Peak amplitude should be determined by some kind of velocity parameter
-        for (float x = startAmplitude; x < 1.0f; x += (Time.deltaTime / attack) * (1.0f - startAmplitude))
+        for (float x = startAmplitude; currentAmplitude < maxAmplitude; x += (Time.deltaTime / attack_temp) * (maxAmplitude - startAmplitude))
         {
-            currentAmplitude = x;
+            currentAmplitude = Mathf.Min(x, maxAmplitude);
             yield return null;
         }
-
-        currentAmplitude = 1.0f;
 
         // DECAY
-        for (float x = currentAmplitude; x > sustain; x -= (Time.deltaTime / decay) * (1.0f - sustain))
+        for (float x = currentAmplitude; currentAmplitude > sustain; x -= (Time.deltaTime / decay) * (maxAmplitude - sustain))
         {
-            currentAmplitude = x;
+            currentAmplitude = Mathf.Max(x, sustain);
             yield return null;
         }
 
-        currentAmplitude = sustain;
-
-        // SUSTAIN
+        // SUSTAIN (to be implemented?)
         // yield return new WaitForSeconds(2.0f);
 
-        // The following should end up in NoteOff()
-
-        // RELEASE
-        for (float x = sustain; x > 0; x -= (Time.deltaTime / release) * (sustain))
+        // RELEASE (should end up in NoteOff()))
+        for (float x = sustain; currentAmplitude > 0; x -= (Time.deltaTime / release) * (sustain))
         {
-            currentAmplitude = x;
+            currentAmplitude = Mathf.Max(x, 0.0f);
             yield return null;
         }
-
-        // Should be a way to more smoothly end up at zero from the above code than to just force it here
-        // Better math likely. Same for getting to sustain level and peak amplitude level
-        currentAmplitude = 0;
     }
 
 
