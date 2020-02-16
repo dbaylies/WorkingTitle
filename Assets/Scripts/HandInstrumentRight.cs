@@ -42,8 +42,13 @@ public class HandInstrumentRight : MonoBehaviour
         float y = pad_pos.y;
 
         PadDirection pad_dir;
-
-        if (x >= y)
+        if (x == 0 && y == 0)
+        {
+            // User is not touching the pad, return down as default
+            pad_dir = PadDirection.PadDown;
+        }
+        else if (x >= y)
+        {
             if (x >= -y)
             {
                 pad_dir = PadDirection.PadRight;
@@ -52,6 +57,7 @@ public class HandInstrumentRight : MonoBehaviour
             {
                 pad_dir = PadDirection.PadDown;
             }
+        }
         else
         {
             if (x >= -y)
