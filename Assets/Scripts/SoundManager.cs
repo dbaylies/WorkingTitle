@@ -17,8 +17,8 @@ public class SoundManager : Singleton<SoundManager>
         440.0f, 466.2f, 493.9f, 523.3f, 554.4f, 587.3f, 622.3f, 659.3f, 698.5f, 740.0f, 784.0f, 830.6f, 880.0f,
         932.3f, 987.8f, 1047f, 1109f, 1175f, 1245f, 1319f, 1397f, 1480f, 1568f, 1661f, 1760f };
 
-        adsr = GameObject.Find("Sphere").GetComponent<ADSR>();
-        oscillator = GameObject.Find("Sphere").GetComponent<Oscillator>();
+        adsr = GetComponent<ADSR>();
+        oscillator = GetComponent<Oscillator>();
         rightController = GameObject.Find("Controller (right)").GetComponent<HandInstrumentRight>();
 
     }
