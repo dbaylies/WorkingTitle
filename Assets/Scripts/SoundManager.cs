@@ -10,6 +10,7 @@ public class SoundManager : Singleton<SoundManager>
     private ADSR adsr;
     private Oscillator oscillator;
     private HandInstrumentRight rightController;
+    private PitchRegionLayout pitchLevels;
 
     private void Start()
     {
@@ -20,6 +21,7 @@ public class SoundManager : Singleton<SoundManager>
         adsr = GetComponent<ADSR>();
         oscillator = GetComponent<Oscillator>();
         rightController = GameObject.Find("Controller (right)").GetComponent<HandInstrumentRight>();
+        pitchLevels = GameObject.Find("Pitch Levels").GetComponent<PitchRegionLayout>();
 
     }
 
@@ -50,9 +52,9 @@ public class SoundManager : Singleton<SoundManager>
 
     private float DetermineFrequency()
     {
-        float base_height = 1.2f;
-        float height_increment = 0.06f;
-        int num_levels = 9;
+        float base_height = pitchLevels.base_height;
+        float height_increment = pitchLevels.height_increment;
+        int num_levels = pitchLevels.gameObject.transform.childCount;
         int pitches_per_level = 4;
 
         HandInstrumentRight.PadDirection direction = rightController.GetPadDirection();
