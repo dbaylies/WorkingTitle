@@ -7,10 +7,12 @@ public class SoundManager : Singleton<SoundManager>
     // Should these be doubles instead?
     public float[] frequencies;
 
+    public PitchRegionLayout pitchLevels;
+
     private ADSR adsr;
     private Oscillator oscillator;
     private HandInstrumentRight rightController;
-    private PitchRegionLayout pitchLevels;
+    private Hand rightControllerHand;
 
     private void Start()
     {
@@ -21,6 +23,7 @@ public class SoundManager : Singleton<SoundManager>
         adsr = GetComponent<ADSR>();
         oscillator = GetComponent<Oscillator>();
         rightController = GameObject.Find("Controller (right)").GetComponent<HandInstrumentRight>();
+        rightControllerHand = GameObject.Find("Controller (right)").GetComponent<Hand>();
         pitchLevels = GameObject.Find("Pitch Levels").GetComponent<PitchRegionLayout>();
 
     }
@@ -63,6 +66,16 @@ public class SoundManager : Singleton<SoundManager>
         int right_level = Mathf.CeilToInt((right_height - base_height) / height_increment);
 
         return frequencies[Mathf.Clamp(right_level, 0, num_levels - 1) * pitches_per_level + (int)direction];
+    }
+
+    public void SetPitchLevelHeight(float baseHeight)
+    {
+        pitchLevels.base_height = baseHeight;
+    }
+
+    public bool IsRightTriggerDown()
+    {
+        return rightControllerHand.triggerDown;
     }
 
 }
