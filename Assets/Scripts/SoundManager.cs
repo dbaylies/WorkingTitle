@@ -55,7 +55,8 @@ public class SoundManager : Singleton<SoundManager>
         oscillator.TurnOn();
         do
         {
-            oscillator.SetVolumeAndFrequency(adsr.GetCurrentAmplitude(), freq);
+            //Trigger maxes at whole tone down
+            oscillator.SetVolumeAndFrequency(adsr.GetCurrentAmplitude(), Mathf.Lerp(freq, (float)(freq * 0.89), rightController.GetSqueeze()));
             yield return null;
         }
         while ( adsr.GetCurrentAmplitude() > 0 );

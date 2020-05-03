@@ -15,6 +15,7 @@ public class HandInstrumentRight : MonoBehaviour
     }
 
     public SteamVR_Action_Boolean m_GrabAction = null;
+    public SteamVR_Action_Single m_SqueezeAction = null;
     public SteamVR_Action_Vector2 m_PadPosition = null;
     public SteamVR_Action_Vibration m_Vibration = null;
 
@@ -76,6 +77,13 @@ public class HandInstrumentRight : MonoBehaviour
     public float GetHeight()
     {
         return transform.position.y;
+    }
+
+    public float GetSqueeze()
+    {
+        //float val = m_SqueezeAction.GetAxis(m_Pose.inputSource);
+        //print(val.ToString());
+        return m_SqueezeAction.GetAxis(m_Pose.inputSource);
     }
 
     public void Vibrate()

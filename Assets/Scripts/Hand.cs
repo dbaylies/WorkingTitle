@@ -30,14 +30,12 @@ public class Hand : MonoBehaviour
         //Down
         if (m_GrabAction.GetStateDown(m_Pose.inputSource))
         {
-            print(m_Pose.inputSource + " Trigger Down");
             triggerDown = true;
             PickUp();
         }
         //Up
         if (m_GrabAction.GetStateUp(m_Pose.inputSource))
         {
-            print(m_Pose.inputSource + " Trigger Up");
             triggerDown = false;
             Drop();
         }
