@@ -36,8 +36,7 @@ public class SoundManager : Singleton<SoundManager>
     {
         adsr.StopCoroutine("NoteOn");
 
-        float leftVelocity = leftController.GetXSpeed();
-        // Measured approx min 0.01, max 5.5
+        float leftVelocity = leftController.GetXSpeed(); // Measured approx min 0.01, max 5.5
 
         // Arctangent is a good mapping function here
         float peakAmplitude = Mathf.Atan(leftVelocity * (10f/5.5f)) / (Mathf.PI / 2);
@@ -55,8 +54,9 @@ public class SoundManager : Singleton<SoundManager>
         oscillator.TurnOn();
         do
         {
-            //Trigger maxes at whole tone down
+            // Pitchbend should max at whole tone down - this coul dbe made a settable parameter
             oscillator.SetVolumeAndFrequency(adsr.GetCurrentAmplitude(), Mathf.Lerp(freq, (float)(freq * 0.89), rightController.GetSqueeze()));
+            adsr.SetDamp(1.0f - leftController.GetSqueeze());
             yield return null;
         }
         while ( adsr.GetCurrentAmplitude() > 0 );
