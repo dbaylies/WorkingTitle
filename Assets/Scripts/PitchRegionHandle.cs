@@ -4,20 +4,11 @@ using UnityEngine;
 
 public class PitchRegionHandle : MonoBehaviour
 {
-    bool triggerEnter;
-
     private void Awake()
     {
         SetAlpha(0.3f);
     }
 
-    private void Update()
-    {
-        //if (triggerEnter)
-        //{
-
-        //}
-    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -25,7 +16,6 @@ public class PitchRegionHandle : MonoBehaviour
         {
             GameManager.Instance.VibrateRightController();
             SetAlpha(0.8f);
-            triggerEnter = true;
             StartCoroutine("TriggerEntered", other);
         }
     }

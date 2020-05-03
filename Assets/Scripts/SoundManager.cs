@@ -12,6 +12,7 @@ public class SoundManager : Singleton<SoundManager>
     private ADSR adsr;
     private Oscillator oscillator;
     private HandInstrumentRight rightController;
+    private HandInstrumentLeft leftController;
     private Hand rightControllerHand;
 
     private void Start()
@@ -23,6 +24,7 @@ public class SoundManager : Singleton<SoundManager>
         adsr = GetComponent<ADSR>();
         oscillator = GetComponent<Oscillator>();
         rightController = GameObject.Find("Controller (right)").GetComponent<HandInstrumentRight>();
+        leftController = GameObject.Find("Controller (left)").GetComponent<HandInstrumentLeft>();
         rightControllerHand = GameObject.Find("Controller (right)").GetComponent<Hand>();
         pitchLevels = GameObject.Find("Pitch Levels").GetComponent<PitchRegionLayout>();
 
@@ -33,7 +35,14 @@ public class SoundManager : Singleton<SoundManager>
     public void TriggerHit()
     {
         adsr.StopCoroutine("NoteOn");
-        adsr.StartCoroutine("NoteOn", adsr.GetCurrentAmplitude());
+
+        float leftVelocity = leftController.GetXSpeed();
+        // Measured approx min 0.01, max 5.5
+
+        // Arctangent is a good mapping function here
+        float peakAmplitude = Mathf.Atan(leftVelocity * (10f/5.5f)) / (Mathf.PI / 2);
+
+        adsr.StartCoroutine("NoteOn", peakAmplitude);
 
         StopCoroutine("NoteOn");
         StartCoroutine("NoteOn");

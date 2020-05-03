@@ -16,10 +16,11 @@ public class ADSR : MonoBehaviour
     {
         attack = 0.2f;  // Seconds
         decay = 0.3f;  // Seconds
-        sustain = 0.6f;  // Amplitude
+        //sustain = 0.6f;  // Amplitude
         release = 0.5f;  // Seconds
 
         maxAmplitude = 1.0f;
+        currentAmplitude = 0.0f;
     }
 
     public float GetCurrentAmplitude()
@@ -33,20 +34,30 @@ public class ADSR : MonoBehaviour
     }
 
     // Give parameters as arguments
-    IEnumerator NoteOn(float startAmplitude)
+    public IEnumerator NoteOn(float peakAmplitude)
     {
+        float startAmplitude = currentAmplitude;
+        sustain = peakAmplitude * 0.9f;
         // ATTACK
         // Attack faster if we aren't starting from 0
-        float attack_temp = attack * (1.0f - (startAmplitude / maxAmplitude));
-        // Peak amplitude should be determined by some kind of velocity parameter
-        for (float x = startAmplitude; currentAmplitude < maxAmplitude; x += (Time.deltaTime / attack_temp) * (maxAmplitude - startAmplitude))
+        float attack_temp = attack * Mathf.Abs((1.0f - (startAmplitude / peakAmplitude)));
+        if (startAmplitude < peakAmplitude)
+            for (float x = startAmplitude; currentAmplitude < peakAmplitude; x += (Time.deltaTime / attack_temp) * (peakAmplitude - startAmplitude))
+            {
+                currentAmplitude = Mathf.Min(x, peakAmplitude);
+                yield return null;
+            }
+        else
         {
-            currentAmplitude = Mathf.Min(x, maxAmplitude);
-            yield return null;
+            for (float x = startAmplitude; currentAmplitude > peakAmplitude; x -= (Time.deltaTime / attack_temp) * (startAmplitude - peakAmplitude))
+            {
+                currentAmplitude = Mathf.Max(x, peakAmplitude);
+                yield return null;
+            }
         }
 
         // DECAY
-        for (float x = currentAmplitude; currentAmplitude > sustain; x -= (Time.deltaTime / decay) * (maxAmplitude - sustain))
+        for (float x = currentAmplitude; currentAmplitude > sustain; x -= (Time.deltaTime / decay) * (peakAmplitude - sustain))
         {
             currentAmplitude = Mathf.Max(x, sustain);
             yield return null;

@@ -40,6 +40,11 @@ public class HandInstrumentLeft : MonoBehaviour
         return transform.position.x;
     }
 
+    public float GetXSpeed()
+    {
+        return Mathf.Abs(m_Pose.GetVelocity().x);
+    }
+
     public void Vibrate()
     {
         m_Vibration.Execute(0.0f, 0.01f, 100.0f, 0.5f, Valve.VR.SteamVR_Input_Sources.LeftHand);
